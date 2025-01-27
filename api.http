@@ -1,0 +1,79 @@
+@base_url = http://127.0.0.1:8000/api
+
+
+### Obtain JWT Token (Login)
+POST {{base_url}}/token/
+Content-Type: application/json
+
+{
+  "username": "john_doe_updated",
+  "password": "newsecurepassword"
+}
+
+
+
+### Refresh JWT Token
+POST {{base_url}}/token/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU3NDMzLCJpYXQiOjE3Mzc5NzEwMzMsImp0aSI6ImE5OTc1ZDg5NzAwMjQzM2Q4ODA0Nzk0YmI5ZTlkMzMxIiwidXNlcl9pZCI6MTF9.27kgBM5g5wxQE6SLBI1axs4PYQcrvS_II8ZMPiwZq7c"
+}
+
+### List All Products (GET /api/products/)
+GET {{base_url}}/products/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+
+### Create New Product (POST /api/products/)
+POST {{base_url}}/products/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+Content-Type: application/json
+
+{
+  "name": "New Product",
+  "description": "A description of the new product",
+  "price": 19.99,
+  "stock": 100,
+  "brand": 1,
+  "categories": [1, 2]
+}
+
+### Get Product Details (GET /api/products/{product_id}/)
+GET {{base_url}}/products/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+
+### Get Product Info (GET /api/products/info/)
+GET {{base_url}}/products/info/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+
+### List All Orders (GET /api/orders/)
+GET {{base_url}}/orders/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+
+### Create New Order (POST /api/orders/)
+POST {{base_url}}/orders/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+Content-Type: application/json
+
+{
+  "status": "Pending",
+  "products": [
+    {
+      "product": 1,
+      "quantity": 2
+    }
+  ]
+}
+
+### Get Order Details (GET /api/orders/{order_id}/)
+GET {{base_url}}/orders/27fbdc8c-e177-43ae-84b9-90314a239f84/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+
+### Get User List (GET /api/accounts/users/)
+GET {{base_url}}/accounts/users/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+
+
+### Get User List (GET /api/accounts/users/)
+GET {{base_url}}/stores/store
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
