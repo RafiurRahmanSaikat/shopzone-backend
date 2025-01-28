@@ -7,12 +7,14 @@ from drf_spectacular.views import (
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from product.views import BrandViewSet, CategoryViewSet
+
 urlpatterns = [
     # Admin panel
     path("admin/", admin.site.urls),
     # App-specific URLs under `/api/`
+    path("api/", include("product.urls")),
     path("api/accounts/", include("account.urls")),
-    path("api/products/", include("product.urls")),
     path("api/stores/", include("store.urls")),
     path("api/orders/", include("order.urls")),
     # Performance monitoring (silk)

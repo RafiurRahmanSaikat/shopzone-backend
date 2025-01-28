@@ -1,11 +1,9 @@
-# Create your models here.
 from django.db import models
 
 from account.models import User
 from store.models import Store
 
 
-# Product App Models
 class Brand(models.Model):
     name = models.CharField(max_length=50)
 
@@ -31,10 +29,6 @@ class Product(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name="products")
     is_approved = models.BooleanField(default=False)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
-
-    @property
-    def in_stock(self):
-        return self.stock > 0
 
     def __str__(self):
         return self.name

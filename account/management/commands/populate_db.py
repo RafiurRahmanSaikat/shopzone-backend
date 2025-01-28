@@ -130,7 +130,7 @@ class Command(BaseCommand):
             },
         ]
         users = []
-        roles = ["customer", "store_manager", "store_owner", "admin"]
+        roles = ["customer", "store_owner", "admin"]
         for index, user_data in enumerate(users_data):
             user = User.objects.create_user(
                 first_name=user_data["first_name"],
@@ -161,7 +161,6 @@ class Command(BaseCommand):
                 address=f"{index+1} Shop Ave, City, Country",
                 location=f"City {index+1}",
                 owner=users[index % len(users)],
-                manager=users[(index + 1) % len(users)],
             )
             for index in range(5)
         ]

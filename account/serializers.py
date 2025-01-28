@@ -7,8 +7,8 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    cart = CartSerializer(read_only=True)
-    orders = OrderSerializer(many=True, read_only=True)
+    # cart = CartSerializer(read_only=True)
+    # orders = OrderSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -16,10 +16,11 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "get_full_name",
-            "email",
-            "is_authenticated",
-            "orders",
-            "cart",
+            "role",
+            # "email",
+            # "is_authenticated",
+            # "orders",
+            # "cart",
         )
 
 

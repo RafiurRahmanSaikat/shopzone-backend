@@ -1,79 +1,85 @@
-@base_url = http://127.0.0.1:8000/api
+### Variables
+@baseUrl = http://localhost:8000/api
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDg5MTMyLCJpYXQiOjE3MzgwMDI3MzIsImp0aSI6IjNjNzRlNjEyOTFlMjQ1Zjc4OTkyZTUwMmQ0YjMyZmJhIiwidXNlcl9pZCI6OH0.jd1YUDOpITnRJ_6WnqyMync1s6HExRfeiZ_hZm_5ii0
+@storeOwnerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDg5OTY0LCJpYXQiOjE3MzgwMDM1NjQsImp0aSI6ImQ2NDZkMzE1YThmODRmMzk4OWRmMzk5Y2ZhMmVjZWMxIiwidXNlcl9pZCI6M30.kRKGkOtjTn1wSWFQcwrXRo3z_YBQv2GFQRNbXQd1L5E
+@storeManagerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDg5MDk4LCJpYXQiOjE3MzgwMDI2OTgsImp0aSI6ImYwYjY1Y2E3YmNmNTRiY2Y5ZjVjODhhNThhYzRhYTgwIiwidXNlcl9pZCI6Mn0.2NvHDJ70anZcO8zs2uLlXvviwI7yCs9oA5y9HIszTaA
+@regularUserToken = your_regular_user_token_here
 
 
 ### Obtain JWT Token (Login)
-POST {{base_url}}/token/
+#!Store Manager
+POST {{baseUrl}}/token/
 Content-Type: application/json
 
 {
-  "username": "john_doe_updated",
-  "password": "newsecurepassword"
+  "username": "tommy_smith",
+  "password": "password123"
 }
-
-
-
-### Refresh JWT Token
-POST {{base_url}}/token/refresh/
+###
+#!Store Owner
+POST {{baseUrl}}/token/
 Content-Type: application/json
 
 {
-  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU3NDMzLCJpYXQiOjE3Mzc5NzEwMzMsImp0aSI6ImE5OTc1ZDg5NzAwMjQzM2Q4ODA0Nzk0YmI5ZTlkMzMxIiwidXNlcl9pZCI6MTF9.27kgBM5g5wxQE6SLBI1axs4PYQcrvS_II8ZMPiwZq7c"
+  "username": "alice_johnson",
+  "password": "password123"
 }
-
-### List All Products (GET /api/products/)
-GET {{base_url}}/products/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
-
-### Create New Product (POST /api/products/)
-POST {{base_url}}/products/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+###
+#!ADMIN
+POST {{baseUrl}}/token/
 Content-Type: application/json
 
 {
-  "name": "New Product",
-  "description": "A description of the new product",
-  "price": 19.99,
-  "stock": 100,
-  "brand": 1,
-  "categories": [1, 2]
+  "username": "oliver_garcia",
+  "password": "password123"
 }
 
-### Get Product Details (GET /api/products/{product_id}/)
-GET {{base_url}}/products/1/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
 
-### Get Product Info (GET /api/products/info/)
-GET {{base_url}}/products/info/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+###! 1. Admin Operations
 
-### List All Orders (GET /api/orders/)
-GET {{base_url}}/orders/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+# Get all products as admin
+GET {{baseUrl}}/products/
+Authorization: Bearer {{adminToken}}
 
-### Create New Order (POST /api/orders/)
-POST {{base_url}}/orders/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+### Create a product as admin (auto-approved)
+
+POST {{baseUrl}}/products/
+Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "status": "Pending",
-  "products": [
-    {
-      "product": 1,
-      "quantity": 2
-    }
-  ]
+    "name": "admin Test Product admin",
+    "description": "A test product description",
+    "price": 99.99,
+    "stock": 10,
+    "brand_id": 2,
+    "category_ids": [3, 2],
+    "store_id": 2
+}
+### Create a product as admin (auto-approved)
+
+POST {{baseUrl}}/brands/
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+    "name": "admin Test Product admin",
+
 }
 
-### Get Order Details (GET /api/orders/{order_id}/)
-GET {{base_url}}/orders/27fbdc8c-e177-43ae-84b9-90314a239f84/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
 
-### Get User List (GET /api/accounts/users/)
-GET {{base_url}}/accounts/users/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+### Update a product as admin (auto-approved)
 
+PUT {{baseUrl}}/products/23/
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
 
-### Get User List (GET /api/accounts/users/)
-GET {{base_url}}/stores/store
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDU4ODY1LCJpYXQiOjE3Mzc5NzI0NjUsImp0aSI6ImUzZjc1YjA3M2Y3ZDRhY2ViNGFkYzg4MDE5YjhlMGIyIiwidXNlcl9pZCI6MTF9.-B3p0WdZoi3Ljh8H5MEdbOU4-Pk_gSIq8F77KEQLG-A
+{
+    "name": "admin admin",
+    "description": "A test product description",
+    "price": 9.25,
+    "stock": 1,
+    "brand_id": 3,
+    "category_ids": [2],
+    "store_id": 2
+}
