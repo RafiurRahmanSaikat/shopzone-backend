@@ -31,7 +31,6 @@ class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
     store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name="products")
-    is_approved = models.BooleanField(default=False)
     image = models.ImageField(upload_to="products/", blank=True, null=True)
 
     def __str__(self):

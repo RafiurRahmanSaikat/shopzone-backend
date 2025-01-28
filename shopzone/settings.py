@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "silk",
     "drf_spectacular",
     "django_filters",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "silk.middleware.SilkyMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = "shopzone.urls"
@@ -162,3 +168,5 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+STRIPE_SECRET_KEY = "your_stripe_secret_key"
+STRIPE_PUBLIC_KEY = "your_stripe_public_key"

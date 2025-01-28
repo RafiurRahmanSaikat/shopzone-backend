@@ -382,7 +382,6 @@ class Command(BaseCommand):
                 rating=randint(1, 5),
                 brand=choice(brand_objs),
                 store=choice(stores),
-                is_approved=True,
             )
             product.categories.add(
                 *[

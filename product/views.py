@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Brand, Category, Product, Review
-from .permissions import IsAdmin, IsAdminOrStoreManagerOrOwner
+from .permissions import IsAdminOrStoreOwner
 from .serializers import (
     BrandSerializer,
     CategorySerializer,
@@ -15,7 +15,7 @@ from .serializers import (
 
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
-    permission_classes = [IsAdminOrStoreManagerOrOwner]
+    permission_classes = [IsAdminOrStoreOwner]
 
     def get_queryset(self):
         return Product.objects.all()
@@ -52,51 +52,12 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data)
 
-    @action(
-        detail=True, methods=["post"], permission_classes=[IsAdminOrStoreManagerOrOwner]
-    )
-    def request_approval(self, request, pk=None):
-        product = self.get_object()
-        if product.is_approved:
-            return Response(
-                {"detail": "Product is already approved."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        # Logic to send approval request (e.g., notify admin)
-        return Response({"detail": "Approval request sent."}, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=["post"], permission_classes=[IsAdmin])
-    def approve(self, request, pk=None):
-        product = self.get_object()
-        if not request.user.is_staff:
-            return Response(
-                {"detail": "Only admin can approve products."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-        product.is_approved = True
-        product.save()
-        return Response({"detail": "Product approved."}, status=status.HTTP_200_OK)
-
-    @action(detail=True, methods=["post"], permission_classes=[IsAdmin])
-    def cancel_approval(self, request, pk=None):
-        product = self.get_object()
-        if not request.user.is_staff:
-            return Response(
-                {"detail": "Only admin can cancel approvals."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-        product.is_approved = False
-        product.save()
-        return Response(
-            {"detail": "Product approval canceled."}, status=status.HTTP_200_OK
-        )
-
 
 class BrandViewSet(viewsets.ModelViewSet):
 
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
-    permission_classes = [IsAdminOrStoreManagerOrOwner]
+    permission_classes = [IsAdminOrStoreOwner]
 
     def has_permission(self, request, view):
         # Allow only admins
@@ -106,7 +67,7 @@ class BrandViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAdminOrStoreManagerOrOwner]
+    permission_classes = [IsAdminOrStoreOwner]
 
     def has_permission(self, request, view):
         # Allow only admins

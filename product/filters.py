@@ -11,7 +11,6 @@ class ProductFilter(django_filters.FilterSet):
         fields = {
             "name": ["iexact", "icontains"],
             "price": ["exact", "lt", "gt", "range"],
-            "is_approved": ["exact"],
         }
 
 
@@ -26,4 +25,4 @@ class ProductPermissionFilterBackend(filters.BaseFilterBackend):
                 return queryset.filter(Q(store__owner=user) | Q(store__manager=user))
 
         # Regular users only see approved products
-        return queryset.filter(is_approved=True)
+        return queryset

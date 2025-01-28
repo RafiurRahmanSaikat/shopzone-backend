@@ -48,10 +48,10 @@ Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-    "name": "Admin Test Product",
+    "name": "Admin Test Product 01",
     "description": "Admin Test Product Description",
-    "price": 99.99,
-    "stock": 10,
+    "price": 9.99,
+    "stock": 1,
     "brand_id": 2,
     "category_ids": [3, 2],
     "store_id": 2
@@ -81,12 +81,12 @@ Content-Type: application/json
 
 ### Update a product as admin (auto-approved)
 
-PUT {{baseUrl}}/products/20/
+PUT {{baseUrl}}/products/22/
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-    "name": "admin 0000",
+    "name": "updayed ",
     "description": "A test product description",
     "price": 9.25,
     "stock": 1,
@@ -107,5 +107,6 @@ Content-Type: application/json
     "rating": 2,
     "comment": "Excellent product, highly recommended!"
 }
+
 
 

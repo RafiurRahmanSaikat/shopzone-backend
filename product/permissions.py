@@ -1,7 +1,7 @@
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
-class IsAdminOrStoreManagerOrOwner(BasePermission):
+class IsAdminOrStoreOwner(BasePermission):
 
     def has_permission(self, request, view):
         # Allow safe methods (GET, HEAD, OPTIONS) for everyone
@@ -39,18 +39,4 @@ class IsAdminOrStoreManagerOrOwner(BasePermission):
             return True
 
         # Deny access by default
-        return False
-
-
-class IsAdmin(BasePermission):
-
-    def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            if request.user.role == "admin":
-                return True
-        return False
-
-    def has_object_permission(self, request, view, obj):
-        if request.user.is_authenticated and request.user.role == "admin":
-            return True
         return False
