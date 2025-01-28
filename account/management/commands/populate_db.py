@@ -1,8 +1,10 @@
 from random import choice, randint, sample
 
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 from django.core.management.base import BaseCommand
 
-from account.models import User
 from order.models import Cart, CartItem, Order, OrderProduct
 from product.models import Brand, Category, Product, Review
 from store.models import Store, StoreCategory
@@ -155,15 +157,24 @@ class Command(BaseCommand):
         )
 
         # Stores (5 stores with realistic names)
-        stores = [
-            Store.objects.create(
-                name=f"BestBuy {index+1}",
-                address=f"{index+1} Shop Ave, City, Country",
-                location=f"City {index+1}",
-                owner=users[index % len(users)],
-            )
-            for index in range(5)
-        ]
+        stores = []
+        store_owners = [
+            user for user in users if user.role == "store_owner"
+        ]  # Filter out users who are store owners
+        for index in range(5):
+            if store_owners:  # Ensure there's at least one store owner
+                store_owner = choice(store_owners)  # Randomly select a store owner
+                store = Store.objects.create(
+                    name=f"BestBuy {index+1}",
+                    address=f"{index+1} Shop Ave, City, Country",
+                    location=f"City {index+1}",
+                    owner=store_owner,
+                )
+                store_owners.remove(
+                    store_owner
+                )  # Ensure a store owner only owns one store
+                stores.append(store)
+
         for store in stores:
             store.store_categories.add(*sample(store_category_objs, k=2))
         self.stdout.write(self.style.SUCCESS(f"Created {len(stores)} stores"))
@@ -388,13 +399,17 @@ class Command(BaseCommand):
         reviews = []
         for product in products[:15]:  # Add reviews only for first 15 products
             for _ in range(randint(1, 5)):  # Random number of reviews per product
-                review = Review.objects.create(
-                    product=product,
-                    user=choice(users),
-                    rating=randint(1, 5),
-                    comment=f"Great product! I really like the {product.name} for its features.",
-                )
-                reviews.append(review)
+                # Ensure the user hasn't already reviewed the product
+                user = choice(users)
+                if not Review.objects.filter(product=product, user=user).exists():
+                    review = Review.objects.create(
+                        product=product,
+                        user=user,
+                        rating=randint(1, 5),
+                        comment=f"Great product! I really like the {product.name} for its features.",
+                    )
+                    reviews.append(review)
+
         self.stdout.write(self.style.SUCCESS(f"Created {len(reviews)} reviews"))
 
         # Orders (10 random orders)

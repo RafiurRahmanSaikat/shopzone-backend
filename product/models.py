@@ -1,6 +1,10 @@
-from django.db import models
+from django.contrib.auth import get_user_model
 
-from account.models import User
+User = get_user_model()
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.db.models import Avg
+
 from store.models import Store
 
 
@@ -39,9 +43,20 @@ class Review(models.Model):
         Product, on_delete=models.CASCADE, related_name="reviews"
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField()
-    comment = models.TextField(blank=True, null=True)
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Review by {self.user.username} for {self.product.name}"
+    class Meta:
+        unique_together = ("product", "user")
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        avg_rating = Review.objects.filter(product=self.product).aggregate(
+            Avg("rating")
+        )["rating__avg"]
+        self.product.rating = avg_rating
+        self.product.save()

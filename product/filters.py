@@ -22,7 +22,7 @@ class ProductPermissionFilterBackend(filters.BaseFilterBackend):
         if user.is_authenticated:
             if user.is_staff:
                 return queryset
-            if user.role in ["store_owner", "store_manager"]:
+            if user.role in ["store_owner", "admin"]:
                 return queryset.filter(Q(store__owner=user) | Q(store__manager=user))
 
         # Regular users only see approved products

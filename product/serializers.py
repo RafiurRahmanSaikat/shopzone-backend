@@ -27,6 +27,12 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ("id", "product", "user", "rating", "comment", "created_at")
+        read_only_fields = ("product", "user", "created_at")
+
+    def validate_rating(self, value):
+        if not 1 <= value <= 5:
+            raise serializers.ValidationError("Rating must be between 1 and 5")
+        return value
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -83,7 +89,7 @@ class ProductSerializer(serializers.ModelSerializer):
         # Allow all users to create/update products if they are admin
         if request and request.user:
             # Check if the user is an admin
-            if request.user.role in ("admin", "store_owner", "store_manager"):
+            if request.user.role in ("admin", "store_owner"):
                 return data
 
             # For non-admin users, check store permissions
@@ -93,7 +99,7 @@ class ProductSerializer(serializers.ModelSerializer):
             # Ensure the store exists in the data
             if store:
                 # Allow store owner or store manager to create/update products for their store
-                if store.owner == request.user or store.manager == request.user:
+                if store.owner == request.user:
                     return data
 
                 # If the user is neither the owner nor the manager, raise a validation error

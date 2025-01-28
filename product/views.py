@@ -1,10 +1,10 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Brand, Category, Product, Review
-from .permissions import IsAdminOrStoreManagerOrOwner
+from .permissions import IsAdmin, IsAdminOrStoreManagerOrOwner
 from .serializers import (
     BrandSerializer,
     CategorySerializer,
@@ -20,18 +20,25 @@ class ProductViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Product.objects.all()
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsAuthenticated],
+        url_path="add_review",
+    )
     def add_review(self, request, pk=None):
         product = self.get_object()
         user = request.user
         data = request.data
 
+        # Check if user already reviewed
         if Review.objects.filter(product=product, user=user).exists():
             return Response(
                 {"detail": "You have already reviewed this product."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Validate and save review
         serializer = ReviewSerializer(data=data)
         if serializer.is_valid():
             serializer.save(product=product, user=user)
@@ -45,7 +52,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(
+        detail=True, methods=["post"], permission_classes=[IsAdminOrStoreManagerOrOwner]
+    )
     def request_approval(self, request, pk=None):
         product = self.get_object()
         if product.is_approved:
@@ -56,7 +65,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         # Logic to send approval request (e.g., notify admin)
         return Response({"detail": "Approval request sent."}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["post"], permission_classes=[IsAdmin])
     def approve(self, request, pk=None):
         product = self.get_object()
         if not request.user.is_staff:
@@ -68,7 +77,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         product.save()
         return Response({"detail": "Product approved."}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["post"], permission_classes=[IsAdmin])
     def cancel_approval(self, request, pk=None):
         product = self.get_object()
         if not request.user.is_staff:
