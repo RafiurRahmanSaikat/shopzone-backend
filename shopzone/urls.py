@@ -5,9 +5,13 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from product.views import BrandViewSet, CategoryViewSet
+from order.views import CartViewSet
+
+router = DefaultRouter()
+router.register(r"api/cart", CartViewSet, basename="cart")
 
 urlpatterns = [
     # Admin panel
@@ -33,3 +37,5 @@ urlpatterns = [
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
+
+urlpatterns += router.urls

@@ -1,13 +1,13 @@
 from random import choice, randint, sample
 
 from django.contrib.auth import get_user_model
-
-User = get_user_model()
 from django.core.management.base import BaseCommand
 
 from order.models import Cart, CartItem, Order, OrderProduct
 from product.models import Brand, Category, Product, Review
 from store.models import Store, StoreCategory
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
@@ -131,8 +131,9 @@ class Command(BaseCommand):
                 "username": "victoria_moore",
             },
         ]
-        users = []
+
         roles = ["customer", "store_owner", "admin"]
+        users = []
         for index, user_data in enumerate(users_data):
             user = User.objects.create_user(
                 first_name=user_data["first_name"],
@@ -147,7 +148,7 @@ class Command(BaseCommand):
             users.append(user)
         self.stdout.write(self.style.SUCCESS(f"Created {len(users)} users"))
 
-        # Store Categories (5 categories)
+        # Store Categories
         store_categories = ["Electronics", "Fashion", "Groceries", "Books", "Furniture"]
         store_category_objs = [
             StoreCategory.objects.create(name=category) for category in store_categories
@@ -156,78 +157,32 @@ class Command(BaseCommand):
             self.style.SUCCESS(f"Created {len(store_category_objs)} store categories")
         )
 
-        # Stores (5 stores with realistic names)
+        # Stores
         stores = []
-        store_owners = [
-            user for user in users if user.role == "store_owner"
-        ]  # Filter out users who are store owners
+        store_owners = [user for user in users if user.role == "store_owner"]
         for index in range(5):
-            if store_owners:  # Ensure there's at least one store owner
-                store_owner = choice(store_owners)  # Randomly select a store owner
+            if store_owners:
+                store_owner = choice(store_owners)
                 store = Store.objects.create(
                     name=f"BestBuy {index+1}",
                     address=f"{index+1} Shop Ave, City, Country",
                     location=f"City {index+1}",
                     owner=store_owner,
                 )
-                store_owners.remove(
-                    store_owner
-                )  # Ensure a store owner only owns one store
+                store_owners.remove(store_owner)
                 stores.append(store)
 
         for store in stores:
             store.store_categories.add(*sample(store_category_objs, k=2))
         self.stdout.write(self.style.SUCCESS(f"Created {len(stores)} stores"))
 
-        # Brands (20 entries)
-        brands = [
-            "Apple",
-            "Samsung",
-            "Sony",
-            "LG",
-            "Nike",
-            "Adidas",
-            "Microsoft",
-            "Google",
-            "Amazon",
-            "Dell",
-            "HP",
-            "Lenovo",
-            "Huawei",
-            "Bose",
-            "Canon",
-            "Nikon",
-            "Razer",
-            "Seagate",
-            "Intel",
-            "Asus",
-        ]
+        # Brands
+        brands = ["Apple", "Samsung", "Sony", "LG", "Nike", "Adidas", "Microsoft"]
         brand_objs = [Brand.objects.create(name=brand) for brand in brands]
         self.stdout.write(self.style.SUCCESS(f"Created {len(brand_objs)} brands"))
 
-        # Product Categories (20 entries)
-        product_categories = [
-            "Mobile",
-            "Laptop",
-            "Shoes",
-            "Books",
-            "TV",
-            "Furniture",
-            "Headphones",
-            "Gaming",
-            "Camera",
-            "Smartwatch",
-            "Monitor",
-            "Speaker",
-            "Tablet",
-            "Storage",
-            "Washing Machine",
-            "Refrigerator",
-            "Air Conditioner",
-            "Smart Home",
-            "Kitchen Appliances",
-            "Lighting",
-        ]
+        # Product Categories
+        product_categories = ["Mobile", "Laptop", "Shoes", "Books", "TV"]
         category_objs = [
             Category.objects.create(name=category) for category in product_categories
         ]
@@ -235,7 +190,7 @@ class Command(BaseCommand):
             self.style.SUCCESS(f"Created {len(category_objs)} product categories")
         )
 
-        # Products (20 products with realistic names, descriptions, prices)
+        # Products
         products_data = [
             {
                 "name": "iPhone 14",
@@ -394,24 +349,23 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f"Created {len(products)} products"))
 
-        # Reviews (15 products with reviews, 5 without)
+        # Reviews
         reviews = []
-        for product in products[:15]:  # Add reviews only for first 15 products
-            for _ in range(randint(1, 5)):  # Random number of reviews per product
-                # Ensure the user hasn't already reviewed the product
+        for product in products[:15]:
+            for _ in range(randint(1, 5)):
                 user = choice(users)
                 if not Review.objects.filter(product=product, user=user).exists():
                     review = Review.objects.create(
                         product=product,
                         user=user,
                         rating=randint(1, 5),
-                        comment=f"Great product! I really like the {product.name} for its features.",
+                        comment=f"Great product! I really like the {product.name}.",
                     )
                     reviews.append(review)
 
         self.stdout.write(self.style.SUCCESS(f"Created {len(reviews)} reviews"))
 
-        # Orders (10 random orders)
+        # Orders
         orders = []
         for _ in range(10):
             user = choice(users)
@@ -419,22 +373,18 @@ class Command(BaseCommand):
             products_sample = sample(products, k=3)
             for product in products_sample:
                 OrderProduct.objects.create(
-                    order=order,
-                    product=product,
-                    quantity=randint(1, 5),
+                    order=order, product=product, quantity=randint(1, 5)
                 )
             orders.append(order)
         self.stdout.write(self.style.SUCCESS(f"Created {len(orders)} orders"))
 
-        # Carts and CartItems (1 cart per user)
+        # Carts and CartItems
         for user in users:
             cart = Cart.objects.create(user=user)
             products_sample = sample(products, k=3)
             for product in products_sample:
                 CartItem.objects.create(
-                    cart=cart,
-                    product=product,
-                    quantity=randint(1, 5),
+                    cart=cart, product=product, quantity=randint(1, 5)
                 )
         self.stdout.write(
             self.style.SUCCESS(f"Created carts and cart items for all users")

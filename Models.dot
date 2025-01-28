@@ -1,6 +1,6 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2025-01-27 09:52
+  // Created: 2025-01-28 14:08
   // Cli Options: product account order store
 
   fontname = "Roboto"
@@ -123,14 +123,6 @@ digraph model_graph {
   
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Roboto">is_approved</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Roboto">BooleanField</FONT>
-    </TD></TR>
-  
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
     <FONT FACE="Roboto">name</FONT>
     </TD><TD ALIGN="LEFT">
     <FONT FACE="Roboto">CharField</FONT>
@@ -197,9 +189,9 @@ digraph model_graph {
   
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">comment</FONT>
+    <FONT FACE="Roboto">comment</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">TextField</FONT>
+    <FONT FACE="Roboto">TextField</FONT>
     </TD></TR>
   
   
@@ -215,7 +207,7 @@ digraph model_graph {
     <TR><TD ALIGN="LEFT" BORDER="0">
     <FONT FACE="Roboto">rating</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Roboto">PositiveIntegerField</FONT>
+    <FONT FACE="Roboto">IntegerField</FONT>
     </TD></TR>
   
   
@@ -646,14 +638,6 @@ digraph model_graph {
   
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Roboto"><B>manager</B></FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
-    </TD></TR>
-  
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
     <FONT FACE="Roboto"><B>owner</B></FONT>
     </TD><TD ALIGN="LEFT">
     <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
@@ -769,9 +753,6 @@ digraph model_graph {
 
   store_models_Store -> account_models_User
   [label=" owner (owned_stores)"] [arrowhead=none, arrowtail=dot, dir=both];
-
-  store_models_Store -> account_models_User
-  [label=" manager (managed_stores)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   store_models_Store -> store_models_StoreCategory
   [label=" store_categories (store)"] [arrowhead=dot arrowtail=dot, dir=both];

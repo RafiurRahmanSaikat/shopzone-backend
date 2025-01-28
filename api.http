@@ -1,8 +1,8 @@
 ### Variables
 @baseUrl = http://localhost:8000/api
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTQ5ODcxLCJpYXQiOjE3MzgwNjM0NzEsImp0aSI6IjdmZDQwNzczNTc0YjQ0NzlhYzgyNjMyNzczN2I1Y2ZkIiwidXNlcl9pZCI6M30.saayefxiTguFE_j1nmj4aIE8WCsoiQbWyysGl3eYtUU
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTYyMDAxLCJpYXQiOjE3MzgwNzU2MDEsImp0aSI6IjhjOTdkMGIzMDM3NjRmMTc4MjYzODQ2MDUwNjEyMGFlIiwidXNlcl9pZCI6M30.VyuZtxRGa1YhD71o_MyHkADA3Jv7nmXOEHqgWyVIV_s
 @storeOwnerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTQ5ODMwLCJpYXQiOjE3MzgwNjM0MzAsImp0aSI6IjMyZWYwZDlmYzMyNzRlYTRiOTAzOTk0ZDhmYzllNzFlIiwidXNlcl9pZCI6MTF9.LJsvVbXoHmRpH2qIylzJNOVpjIyrx85R8A_YAFoGtdU
-@regularUserToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTQ5ODg0LCJpYXQiOjE3MzgwNjM0ODQsImp0aSI6IjNiYTAwZmNkNjVkNDRjNmE4YjZmZTM1YWRlOGViNTFjIiwidXNlcl9pZCI6MX0.fLXourCRTAn5BFMLt1PXwdQz8dqRhvj91CpwEkdL3ac
+@regularUserToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTYxOTg4LCJpYXQiOjE3MzgwNzU1ODgsImp0aSI6IjM0YzQ2ZDUxOTM3YTQ0MmJiNzZkMDhmNjIxMDU0ZTg1IiwidXNlcl9pZCI6MX0.rAiVPrzCZblFy-JHli92xlIkFyVST3aUhFTVJBK9FhM
 
 ### Obtain JWT Token (Login)
 #!Customer
@@ -81,7 +81,7 @@ Content-Type: application/json
 
 ### Update a product as admin (auto-approved)
 
-PUT {{baseUrl}}/products/22/
+PUT {{baseUrl}}/products/20/
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -109,33 +109,72 @@ Content-Type: application/json
 }
 
 
+### Add Product to Cart (replace <product_id> with actual ID)
+POST {{baseUrl}}/cart/
+Content-Type: application/json
+Authorization: Bearer {{regularUserToken}}
 
-### Create an Order as Customer
+{
+    "product": 1,
+    "quantity": 2
+}
+
+### Add Same Product Again (quantity should increase to 4)
+POST {{baseUrl}}/cart/
+Content-Type: application/json
+Authorization: Bearer {{regularUserToken}}
+
+{
+    "product": 1,
+    "quantity":1
+}
+
+### Add Different Product
+POST {{baseUrl}}/cart/
+Content-Type: application/json
+Authorization: Bearer {{regularUserToken}}
+
+{
+    "product": 2,
+    "quantity": 3
+}
+
+### Get Cart Contents
+GET {{baseUrl}}/cart/
+Authorization: Bearer {{regularUserToken}}
+
+### Remove Cart Item (replace <item_id> with actual ID)
+DELETE {{baseUrl}}/cart/66/
+Authorization: Bearer {{regularUserToken}}
+
+
+
+### Create Order from Cart
+POST {{baseUrl}}/orders/
+Content-Type: application/json
+Authorization: Bearer {{regularUserToken}}
+
+
+{
+    "from_cart": true
+}
+
+
+### Create Direct Order
 POST {{baseUrl}}/orders/
 Content-Type: application/json
 Authorization: Bearer {{regularUserToken}}
 
 {
-    "products": [
-        {
-            "product": 10,
-            "quantity": 10
-        },
-        {
-            "product": 2,
-            "quantity": 5
-        }
-    ]
+    "product_id": 12,
+    "quantity": 2
 }
 
 
-### Get an Order
-GET  {{baseUrl}}/orders/
-Content-Type: application/json
+### Get Orders List
+GET {{baseUrl}}/orders/
 Authorization: Bearer {{regularUserToken}}
 
-###! Get an Order as Admin
-GET  {{baseUrl}}/orders/
-Content-Type: application/json
-Authorization: Bearer {{adminToken}}
+
+
 
