@@ -9,7 +9,6 @@ from django.db import models
 from product.models import Product
 
 
-# Order App Models
 class Order(models.Model):
     class StatusChoices(models.TextChoices):
         PENDING = "Pending"

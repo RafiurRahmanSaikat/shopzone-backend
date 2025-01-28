@@ -110,3 +110,32 @@ Content-Type: application/json
 
 
 
+### Create an Order as Customer
+POST {{baseUrl}}/orders/
+Content-Type: application/json
+Authorization: Bearer {{regularUserToken}}
+
+{
+    "products": [
+        {
+            "product": 10,
+            "quantity": 10
+        },
+        {
+            "product": 2,
+            "quantity": 5
+        }
+    ]
+}
+
+
+### Get an Order
+GET  {{baseUrl}}/orders/
+Content-Type: application/json
+Authorization: Bearer {{regularUserToken}}
+
+###! Get an Order as Admin
+GET  {{baseUrl}}/orders/
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+

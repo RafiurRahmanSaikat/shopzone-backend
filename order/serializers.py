@@ -6,6 +6,7 @@ from order.models import Cart, CartItem, Order, OrderProduct
 
 class OrderProductSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source="product.name", read_only=True)
+    product_image = serializers.CharField(source="product.image", read_only=True)
     product_price = serializers.DecimalField(
         max_digits=10, decimal_places=2, source="product.price", read_only=True
     )
@@ -14,9 +15,9 @@ class OrderProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
         fields = (
-            "product",
             "product_name",
             "product_price",
+            "product_image",
             "quantity",
             "item_subtotal",
         )
@@ -35,6 +36,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     products = OrderProductCreateSerializer(many=True, write_only=True)
 
     def create(self, validated_data):
+        # Debug: Print the validated data and request user
+        print("Validated Data:", validated_data)
+        print("Request User:", self.context["request"].user)
+
+        # Automatically set the user to the currently logged-in user
+        validated_data["user"] = self.context["request"].user
         products_data = validated_data.pop("products", [])
 
         with transaction.atomic():
@@ -43,19 +50,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 OrderProduct.objects.create(order=order, **product_data)
 
         return order
-
-    def update(self, instance, validated_data):
-        products_data = validated_data.pop("products", [])
-
-        with transaction.atomic():
-            instance = super().update(instance, validated_data)
-
-            if products_data:
-                instance.products.clear()  # Remove old products
-                for product_data in products_data:
-                    OrderProduct.objects.create(order=instance, **product_data)
-
-        return instance
 
     class Meta:
         model = Order
