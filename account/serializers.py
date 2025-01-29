@@ -8,9 +8,6 @@ from order.serializers import CartSerializer, OrderSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # cart = CartSerializer(read_only=True)
-    # orders = OrderSerializer(many=True, read_only=True)
-
     class Meta:
         model = User
         fields = (
@@ -18,11 +15,27 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "get_full_name",
             "role",
-            # "email",
-            # "is_authenticated",
-            # "orders",
-            # "cart",
+            "email",
+            "is_authenticated",
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if self.context.get("include_related"):
+            data["orders"] = OrderSerializer(
+                instance.orders.select_related("user").prefetch_related(
+                    "order_products__product"
+                ),
+                many=True,
+            ).data
+            data["cart"] = CartSerializer(
+                instance.cart.prefetch_related("cart_items__product")
+            ).data
+        return data
+
+
+from django.contrib.auth.hashers import make_password
+from rest_framework import serializers
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -41,7 +54,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        # Hash the password
         validated_data["password"] = make_password(validated_data["password"])
         return super().create(validated_data)
 
@@ -49,24 +61,38 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("username", "email", "phone_number", "address", "profile_picture")
+        fields = (
+            "username",
+            "email",
+            "phone_number",
+            "first_name",
+            "last_name",
+            "address",
+            "profile_picture",
+        )
 
 
 class PasswordChangeSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True, write_only=True)
-    new_password = serializers.CharField(required=True, write_only=True)
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
 
-    def validate_old_password(self, value):
+    def validate(self, attrs):
+        if attrs["new_password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError(
+                {"confirm_password": "The two password fields didn't match."}
+            )
+
+        # Verify old password
         user = self.context["request"].user
-        if not user.check_password(value):
-            raise serializers.ValidationError("Old password is incorrect.")
-        return value
+        if not user.check_password(attrs["old_password"]):
+            raise serializers.ValidationError(
+                {"old_password": "Current password is not correct"}
+            )
 
-    def validate_new_password(self, value):
-        # Add password validation logic if needed
-        return value
+        return attrs
 
-    def save(self, **kwargs):
+    def save(self):
         user = self.context["request"].user
         user.set_password(self.validated_data["new_password"])
         user.save()

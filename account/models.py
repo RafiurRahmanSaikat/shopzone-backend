@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.cache import cache
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class User(AbstractUser):
@@ -14,5 +17,20 @@ class User(AbstractUser):
     address = models.TextField()
     profile_picture = models.ImageField(upload_to="profiles/", blank=True, null=True)
 
-    def __str__(self):
-        return self.username
+    class Meta:
+        indexes = [
+            models.Index(fields=["role"]),
+            models.Index(fields=["username"]),
+            models.Index(fields=["email"]),
+        ]
+
+    def get_cache_key(self):
+        return f"user_data_{self.id}"
+
+    def clear_cache(self):
+        cache.delete(self.get_cache_key())
+
+
+@receiver(post_save, sender=User)
+def clear_user_cache(sender, instance, **kwargs):
+    instance.clear_cache()
