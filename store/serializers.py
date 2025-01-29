@@ -1,6 +1,5 @@
+# store/serializers.py
 from rest_framework import serializers
-
-from account.serializers import UserSerializer
 
 from .models import Store, StoreCategory
 
@@ -11,10 +10,25 @@ class StoreCategorySerializer(serializers.ModelSerializer):
         fields = ("id", "name")
 
 
-class storeerializer(serializers.ModelSerializer):
-    owner = UserSerializer()
-    store_categories = StoreCategorySerializer(many=True)
+class StoreSerializer(serializers.ModelSerializer):
+    store_categories = StoreCategorySerializer(many=True, read_only=True)
+    category_ids = serializers.PrimaryKeyRelatedField(
+        queryset=StoreCategory.objects.all(),
+        many=True,
+        write_only=True,
+        source="store_categories",
+    )
+    owner = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Store
-        fields = ("id", "name", "address", "location", "owner", "store_categories")
+        fields = (
+            "id",
+            "name",
+            "address",
+            "location",
+            "owner",
+            "store_categories",
+            "category_ids",
+        )
+        read_only_fields = ("owner",)
