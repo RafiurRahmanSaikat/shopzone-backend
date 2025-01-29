@@ -88,3 +88,7 @@ class OrderCreateSerializer(serializers.Serializer):
             )
 
         return data
+
+
+class OrderStatusUpdateSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=Order.StatusChoices.choices)

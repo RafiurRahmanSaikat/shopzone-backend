@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Cart, CartItem, Order, OrderProduct, Product
+from .permissions import CanManageOrderStatus
 from .serializers import (
     CartItemSerializer,
     CartSerializer,
@@ -64,9 +66,20 @@ class OrderViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.is_staff:
+        user = self.request.user
+        if user.role == "admin":
             return Order.objects.all()
-        return Order.objects.filter(user=self.request.user)
+        elif user.role == "store_owner":
+
+            return Order.objects.filter(
+                order_products__product__store__owner=user
+            ).distinct()
+        return Order.objects.filter(user=user)
+
+    # def get_queryset(self):
+    #     if self.request.user.is_staff:
+    #         return Order.objects.all()
+    #     return Order.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = OrderCreateSerializer(
@@ -99,3 +112,40 @@ class OrderViewSet(viewsets.ModelViewSet):
         order = Order.objects.create(user=user)
         OrderProduct.objects.create(order=order, product=product, quantity=quantity)
         return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True,
+        methods=["PATCH"],
+        permission_classes=[IsAuthenticated, CanManageOrderStatus],
+    )
+    def update_status(self, request, pk=None):
+        order = self.get_object()
+        new_status = request.data.get("status")
+
+        if new_status not in Order.StatusChoices.values:
+            return Response(
+                {"detail": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Store owner restrictions
+        if request.user.role == "store_owner":
+            allowed_statuses = [
+                Order.StatusChoices.PENDING,
+                Order.StatusChoices.CONFIRMED,
+                Order.StatusChoices.CANCELLED,
+                Order.StatusChoices.SHIPPED,
+                Order.StatusChoices.DELIVERED,
+            ]
+            if new_status not in allowed_statuses:
+                return Response(
+                    {
+                        "detail": "Store owners can only set Pending, Confirmed, or Shipped status"
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+        # Update the status
+        order.status = new_status
+        order.save()
+
+        return Response(OrderSerializer(order).data)

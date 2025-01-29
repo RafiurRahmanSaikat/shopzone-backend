@@ -47,7 +47,5 @@ class StoreViewSet(viewsets.ModelViewSet):
     def orders(self, request, pk=None):
         store = self.get_object()
         orders = Order.objects.filter(order_products__product__store=store).distinct()
-
-        # orders = Order.objects.filter(items__product__store=store).distinct()
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)

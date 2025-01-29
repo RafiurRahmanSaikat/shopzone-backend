@@ -229,3 +229,23 @@ Authorization: Bearer {{storeOwnerToken}}
 ###? Get store orders
 GET {{baseUrl}}/stores/3/orders/
 Authorization: Bearer {{storeOwnerToken}}
+
+
+###? Change order status (store owner)
+PATCH {{baseUrl}}/orders/1ad1f9c6-4fc2-4dfd-9401-0e48373e64e1/update_status/
+Content-Type: application/json
+Authorization: Bearer {{storeOwnerToken}}
+
+{
+    "status": "Cancelled"
+}
+
+
+###? Change order status (Admin)
+PATCH {{baseUrl}}/orders/e5883977-b860-403c-9b7f-83636938bb06/update_status/
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+    "status": "Cancelled"
+}
