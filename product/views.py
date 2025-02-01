@@ -1,6 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .models import Brand, Category, Product, Review
@@ -18,7 +18,13 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrStoreOwner]
 
     def get_queryset(self):
-        return Product.objects.all()
+        # return Product.objects.all()
+        return (
+            Product.objects.all()
+            .order_by("id")
+            .select_related("brand", "store")
+            .prefetch_related("categories", "reviews__user")
+        )
 
     @action(
         detail=True,

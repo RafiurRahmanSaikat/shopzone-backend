@@ -2,7 +2,7 @@
 @baseUrl = http://localhost:8000/api
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTYyMDAxLCJpYXQiOjE3MzgwNzU2MDEsImp0aSI6IjhjOTdkMGIzMDM3NjRmMTc4MjYzODQ2MDUwNjEyMGFlIiwidXNlcl9pZCI6M30.VyuZtxRGa1YhD71o_MyHkADA3Jv7nmXOEHqgWyVIV_s
 @storeOwnerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MjIyMzMyLCJpYXQiOjE3MzgxMzU5MzIsImp0aSI6IjdmZTNjOGQ4YzQ1MzRhOGI5YzE1NDRjOGM2MmQ0NTVkIiwidXNlcl9pZCI6MTF9.NUcn_Z-_HqEvMrINYBlLEVC5SeAn5alw67bn9x4Mt94
-@regularUserToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MTYxOTg4LCJpYXQiOjE3MzgwNzU1ODgsImp0aSI6IjM0YzQ2ZDUxOTM3YTQ0MmJiNzZkMDhmNjIxMDU0ZTg1IiwidXNlcl9pZCI6MX0.rAiVPrzCZblFy-JHli92xlIkFyVST3aUhFTVJBK9FhM
+@regularUserToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MjU2ODUwLCJpYXQiOjE3MzgxNzA0NTAsImp0aSI6IjU0YjFkZjg2NmVmNTQxMWI4MTA2ZWNjNDMzYWU0MTY4IiwidXNlcl9pZCI6MX0.lRHzaS33o6mKtjevJvdv1N5xZO-RoaPz8ytbbM-n7aE
 @testUserToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MjI3MTc0LCJpYXQiOjE3MzgxNDA3NzQsImp0aSI6IjI0NmQ4MDE4M2QzMjRiNTc4YjhiOGU2MDE3ZGRhN2JhIiwidXNlcl9pZCI6MjJ9.9V0728aS09EKWG1yKZvHm6hU14Zv-wKZj9k9OUUcUVk
 ###? Obtain JWT Token (Login)
 #!Customer
@@ -307,3 +307,16 @@ Content-Type: application/json
 ###? Admin Delete Account
 DELETE {{baseUrl}}/accounts/users/21/
 Authorization: Bearer {{adminToken}}
+
+
+###! Logout (use the refresh token received from login)
+POST http://127.0.0.1:8000/api/logout/
+Content-Type: application/json
+Authorization: Bearer {{regularUserToken}}
+
+{
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczODc3NTI1MCwiaWF0IjoxNzM4MTcwNDUwLCJqdGkiOiI3YTY4ZDViODFlOGU0ZDI4ODgzMGJlYjQ3M2UwMDc2YyIsInVzZXJfaWQiOjF9.GWYqppw-hF2NqowH4LMig2VPHqPoBvdrbat1xpYp4aQ"
+}
+
+####
+GET  http://127.0.0.1:8000/api/products
